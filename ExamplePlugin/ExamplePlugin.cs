@@ -47,12 +47,12 @@ namespace ExamplePlugin
                 // This is for a NONE item, so you can remove items.
                 // Think Hair (Tab 2, (Customization.Type)20), which has an empty slot.
                 BuildOption("mouthmesh_none", MakeExampleIcon([
-                            new Color32(0xff, 0xff, 0xff, 0x00),
-                            new Color32(0xff, 0xff, 0xff, 0x00)
+                    new Color32(0xff, 0xff, 0xff, 0x00),
+                    new Color32(0xff, 0xff, 0xff, 0x00)
                 ])),
                 BuildOption("Example1", MakeExampleIcon([
-                        new Color32(0xBB, 0x9c, 0x34, 0xff),
-                        new Color32(0x2D, 0xBB, 0x79, 0xFF)
+                    new Color32(0xBB, 0x9c, 0x34, 0xff),
+                    new Color32(0x2D, 0xBB, 0x79, 0xFF)
                 ])),
                 BuildOption("LockedItem", MakeExampleIcon([
                     new Color32(0x24, 0x06, 0xBB, 0xFF),
@@ -77,9 +77,9 @@ namespace ExamplePlugin
                 // OnInitialEquip = (character, index) => {}
                 // Returns Character and Item Index.
                 // IE: You load into a run, you have no passport.
-                // This will make sure it applies your items to the character
+                // This will run so you can run your equip function.
                 
-                // The 
+                // When selecting your option, this will return the index selected, so you can equip your item.
                 OnOptionSelected = index =>
                 {
                     Log.LogInfo($"Selected Option: {index}");
