@@ -1,0 +1,51 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <AssemblyName>my.example.mod</AssemblyName>
+        <RootNamespace>ExamplePlugin</RootNamespace>
+        <Authors>Milo</Authors>
+        <Nullable>disable</Nullable>
+
+
+        <!-- My MacOS (CrossOver) game install -->
+        <GameDir>$(Home)/Library/Application Support/CrossOver/Bottles/Steam/drive_c/Program Files (x86)/Steam/steamapps/common/PEAK</GameDir>
+        <ManagedDir>$(GameDir)/PEAK_Data/Managed</ManagedDir>
+        <PluginDir>$(GameDir)/BepInEx/plugins</PluginDir>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="BepInEx.Core" Version="5.4.*" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Reference Include="PassportExtender">
+            <!-- Use this when modding, unless you download the PE source code, use the below local path. -->
+            <!--  <HintPath>$(PluginDir)/com.algorithmicpolicyindex.PassportExtender.dll</HintPath>  -->
+            <HintPath>../PassportExtender/bin/Debug/netstandard2.1/com.algorithmicpolicyindex.PassportExtender.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        
+        <!-- Game Assembly -->
+        <Reference Include="Assembly-CSharp">
+            <HintPath>$(ManagedDir)/Assembly-CSharp.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        
+        <!-- Unity Modules, from the games directory -->
+        <Reference Include="UnityEngine.CoreModule">
+            <HintPath>$(ManagedDir)/UnityEngine.CoreModule.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="UnityEngine">
+            <HintPath>$(ManagedDir)/UnityEngine.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+    </ItemGroup>
+    
+    <!-- Auto-deploy to Peak's BepInEx Pligin Directory -->
+    <Target Name="DeployToPlugins" AfterTargets="Build">
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(PluginDir)" />
+    </Target>
+</Project>

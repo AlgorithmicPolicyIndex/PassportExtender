@@ -1,0 +1,68 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <AssemblyName>com.algorithmicpolicyindex.PassportExtender</AssemblyName>
+        <RootNamespace>PassportExtender</RootNamespace>
+        <LangVersion>latest</LangVersion>
+        <Authors>Milo</Authors>
+        <Description>A Library to extend the Passport UI</Description>
+        <Nullable>disable</Nullable>
+
+        <!-- My MacOS install -->
+        <GameDir>$(Home)/Library/Application Support/CrossOver/Bottles/Steam/drive_c/Program Files (x86)/Steam/steamapps/common/PEAK</GameDir>
+        <ManagedDir>$(GameDir)/PEAK_Data/Managed</ManagedDir>
+        <PluginDir>$(GameDir)/BepInEx/plugins</PluginDir>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="BepInEx.Core" Version="5.4.*" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <Reference Include="Assembly-CSharp">
+            <HintPath>$(ManagedDir)/Assembly-CSharp.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="UnityEngine">
+            <HintPath>$(ManagedDir)/UnityEngine.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="UnityEngine.CoreModule">
+            <HintPath>$(ManagedDir)/UnityEngine.CoreModule.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="UnityEngine.UI">
+            <HintPath>$(ManagedDir)/UnityEngine.UI.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="Unity.TextMeshPro">
+            <HintPath>$(ManagedDir)/Unity.TextMeshPro.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+
+        <Reference Include="UnityEngine.UIModule">
+            <HintPath>$(ManagedDir)/UnityEngine.UIModule.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+
+        <Reference Include="PhotonRealtime">
+            <HintPath>$(ManagedDir)/PhotonRealtime.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="PhotonUnityNetworking">
+            <HintPath>$(ManagedDir)/PhotonUnityNetworking.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="PhotonUnityNetworking.Utilities">
+            <HintPath>$(ManagedDir)/PhotonUnityNetworking.Utilities.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+    </ItemGroup>
+
+    <!-- Auto-deploy to Peak's BepInEx Pligin Directory -->
+    <Target Name="DeployToPlugins" AfterTargets="Build">
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(PluginDir)" />
+    </Target>
+    
+</Project>
