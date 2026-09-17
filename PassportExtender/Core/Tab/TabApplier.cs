@@ -11,7 +11,7 @@ namespace PassportExtender.Core.Tab;
 
 internal static class TabApplier
 {
-    [CanBeNull] static GameObject _template;
+    [CanBeNull] private static GameObject _template;
     [CanBeNull] private static PassportManager _cachedManager;
 
     public static void Init(PassportManager manager)
@@ -28,13 +28,12 @@ internal static class TabApplier
         return manager != null;
     }
 
-    [CanBeNull]
-    internal static PassportTab CreateTab(PassportManager manager, TabDefinition def)
+    internal static void CreateTab(PassportManager manager, TabDefinition def)
     {
         if (_template == null)
         {
             Log.LogError("[TabApplier] Template uninitialized – Cannot create tab.");
-            return null;
+            return;
         }
 
         var clone = Object.Instantiate(_template, _template.transform.parent);
@@ -45,16 +44,24 @@ internal static class TabApplier
         {
             Log.LogWarning($"[TabApplier] {clone.name} lacks PassportTab component.");
             Object.Destroy(clone.gameObject);
-            return null;
+            return;
         }
 
-        var rawImage = clone.transform.Find("Panel/Icon").GetComponent<RawImage>();
-        rawImage.texture = def.Icon;
+        var iconTransform = clone.transform.Find("Panel/Icon");
+        var rawImage = iconTransform != null ? iconTransform.GetComponent<RawImage>() : null;
+        if (rawImage == null)
+        {
+            Log.LogWarning($"[TabApplier] {clone.name}: no RawImage at Panel/Icon – icon not set. Falling back...");
+        }
+        else rawImage.texture = def.Icon;
         
         passportTab.type = (Customization.Type)def.Type.Id;
 
         var index = manager.tabs.Length;
-        clone.transform.SetSiblingIndex(Array.IndexOf(manager.tabs, passportTab));
+
+        Array.Resize(ref manager.tabs, manager.tabs.Length + 1);
+        manager.tabs[^1] = passportTab;
+        clone.transform.SetSiblingIndex(index);
 
         Array.Resize(ref manager.tabs, manager.tabs.Length + 1);
         manager.tabs[^1] = passportTab;
@@ -68,7 +75,5 @@ internal static class TabApplier
 
         Scroller.RearmArrows(manager);
         Log.LogInfo($"[TabApplier] Created tab '{def.Name}' at index {index}");
-        
-        return passportTab;
     }
 }

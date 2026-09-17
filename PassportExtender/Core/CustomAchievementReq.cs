@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using HarmonyLib;
 
-namespace PassportExtender.Patcher;
+namespace PassportExtender.Core;
 
 public static class CustomAchievementReq
 {

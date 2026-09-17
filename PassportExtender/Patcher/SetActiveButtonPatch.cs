@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using HarmonyLib;
 using PassportExtender.Core.Tab;
 using PassportExtender.Core.Util;
@@ -8,6 +9,11 @@ namespace PassportExtender.Patcher;
 [HarmonyPatch(typeof(PassportManager), "SetActiveButton", new Type[] { typeof(bool) })]
 internal static class SetActiveButtonPatch
 {
+    private static readonly FieldInfo ButtonsPerPageFi =
+        AccessTools.Field(typeof(PassportManager), "buttonsPerPage")
+        ?? throw new InvalidOperationException(
+            "PassportManager.buttonsPerPage not found — game update may have renamed it");
+    
     [HarmonyPostfix]
     private static void Highlight(PassportManager __instance, bool fromTabChange, ref int __result)
     {
@@ -15,13 +21,14 @@ internal static class SetActiveButtonPatch
 
         if (!TabTypeRegistry.TryResolveName(typeId, out _)) return;
 
+
         var selected = TabRegistry.GetSelected(typeId);
-        if (selected < 0) return;
+        if (selected < 0)
+            selected = __result;
 
         __result = selected;
 
-        var bpp = (int)AccessTools.Field(typeof(PassportManager), "buttonsPerPage")
-            .GetValue(__instance);
+        var bpp = (int)ButtonsPerPageFi.GetValue(__instance);
         var page = selected / bpp;
 
         for (var i = 0; i < __instance.buttons.Length; i++)

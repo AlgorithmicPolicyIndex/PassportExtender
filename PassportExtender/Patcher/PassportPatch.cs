@@ -1,5 +1,4 @@
 using HarmonyLib;
-using PassportExtender.Core;
 using PassportExtender.Core.Tab;
 using PassportExtender.Core.Util;
 using PassportExtender.UI;

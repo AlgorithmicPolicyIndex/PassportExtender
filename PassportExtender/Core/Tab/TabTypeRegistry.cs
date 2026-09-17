@@ -7,7 +7,7 @@ public static class TabTypeRegistry
 {
     private static readonly Dictionary<string, TabType> ByName = new();
     private static readonly Dictionary<int, string> NamesById = new();
-    private static int _nextId = 80;
+    private static int _nextId = 100;
 
     private static readonly object Lock = new();
 

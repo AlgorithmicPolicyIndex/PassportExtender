@@ -39,14 +39,6 @@ With that being said, I am COMPLETELY OKAY with people forking and editing and d
   up, even *after* the passport already exists
 
 ## Upcoming Changes
-- Breaking
-  - Generalized Functions
-    - OnInitialEquip -> OnManagerSpawn
-    - This is so your mod can use the Passport mod for things OUTSIDE of cosmetics. While you can already do this.
-    - Known Issue:
-      - Things like the returned Character and Index in OnInitialEquip, will be removed. Depending mods will need to handle the character themselves.
-  - Separating Cosmetic functions such as SetOption (see [SetOptionPatch](Patcher/SetOptionPatch.cs))
-    - The `__instance.dummy.UpdateDummy();`, used to update the dummy viewer in Passport, will be moved to a more specific function for depending mods.
 - Planned
   - Use default Passport for the cosmetic mods (a Cosmetic/Non-Cosmetic typing)
   - Creation of a new Passport menu (switchable from normal Passport menu?)

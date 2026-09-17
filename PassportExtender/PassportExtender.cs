@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Linq;
-using System.Reflection;
 using BepInEx;
 using BepInEx.Configuration;
-using BepInEx.Logging;
 using HarmonyLib;
-using PassportExtender.Core;
 using PassportExtender.Core.Util;
+using PassportExtender.Core.Watchers;
 using PassportExtender.Patcher;
-using PassportExtender.UI;
 
 namespace PassportExtender;
 
@@ -17,11 +13,11 @@ namespace PassportExtender;
     Name,
     Version
 )]
-public sealed class Main : BaseUnityPlugin
+internal sealed class Main : BaseUnityPlugin
 {
     public const string Guid = "com.algorithmicpolicyindex.passportextender";
     private const string Name = "PassportExtender";
-    private const string Version = "0.2.1";
+    private const string Version = "0.3.0";
     
     internal static ConfigEntry<bool> DebugLogs;
     
@@ -32,13 +28,14 @@ public sealed class Main : BaseUnityPlugin
         Log.Source = Logger;
         DebugLogs = Config.Bind("General", "Debug_Logs", false, "Enable Verbose [DEBUG] output.");
 
-        Log.LogInfo($"[Startup] Debug_Logs = {DebugLogs.Value}");
         PassportExtenderAPI.Initialize();
-        ExtenderRestorer.EnsureExists();
+        PassportLifecycleWatcher.EnsureExists();
         
         try
         {
             _harmony = new Harmony(Guid);
+            // I need to figure out why PatchAll() does not work without specifying.
+            // _harmony.PatchAll();
             _harmony.PatchAll(typeof(PassportPatch));
             _harmony.PatchAll(typeof(DummyPatch));
             _harmony.PatchAll(typeof(CustomizationGetListPatch));

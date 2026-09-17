@@ -13,7 +13,11 @@ internal static class CustomizationGetListPatch
         if (!TabTypeRegistry.TryResolveName((int)type, out _))
             return true;
 
-        if (!TabRegistry.TryGetDefinition((int)type, out var def)) return false;
+        if (!TabRegistry.TryGetDefinition((int)type, out var def))
+        {
+            __result = [];
+            return false;
+        }
         
         __result = def.Options ?? [];
         Log.LogDebug($"[GetList] serving {__result.Length} options for '{def.Name}'");

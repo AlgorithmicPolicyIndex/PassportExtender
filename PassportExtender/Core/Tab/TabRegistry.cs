@@ -21,14 +21,14 @@ public static class TabRegistry
             return;
         }
         
-        if (definition.InitialSelection > 0)
+        if (definition.InitialSelection >= 0)
             SetSelected(definition.Type.Id, definition.InitialSelection);
         
         Definitions[definition.Name] = definition;
         ByTypeId[definition.Type.Id] = definition;
         PendingOrder.Add(definition);
         
-        Log.LogDebug($"[TabRegistry] queued '{definition.Name} (total: {Definitions.Count})");
+        Log.LogDebug($"[TabRegistry] queued '{definition.Name}' (total: {Definitions.Count})");
 
         if (_passportBuilt && TabApplier.TryGetCurrentManager(out var manager))
         {
@@ -61,31 +61,11 @@ public static class TabRegistry
         TabApplier.CreateTab(manager, def);
     }
 
-    internal static bool RestoreSelections(Character character)
-    {
-        var allApplied = true;
-        foreach (var def in Registered)
-        {
-            var sel = GetSelected(def.Type.Id);
-            if (sel < 0) continue;
-
-            var applied = def.OnInitialEquip?.Invoke(character, sel) ?? true;
-            if (applied)
-                Log.LogDebug($"[Restore] '{def.Name}' equipped {sel} on {character.gameObject.name}");
-            else
-            {
-                Log.LogDebug($"[Restore] failed to restore.");
-                allApplied = false;
-            }
-        }
-        return allApplied;
-    }
-
     private static IReadOnlyList<TabDefinition> Registered => PendingOrder;
     public static int Count => Definitions.Count;
     public static int GetSelected(int typeId)
         => SelectedByTypeId.GetValueOrDefault(typeId, -1);
 
-    public static void SetSelected(int typeId, int index)
+    internal static void SetSelected(int typeId, int index)
         => SelectedByTypeId[typeId] = index;
 }

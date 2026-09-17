@@ -8,22 +8,22 @@
 using System.Collections.Generic;
 using BepInEx;
 using BepInEx.Configuration;
+using PassportExtender;
 using PassportExtender.Core;
 using PassportExtender.Core.Tab;
-using PassportExtender.Patcher;
 using UnityEngine;
 
 namespace ExamplePlugin
 {
     [BepInPlugin(Guid, Name, Version)]
-    [BepInDependency(PassportExtender.Main.Guid)]
+    [BepInDependency(PassportExtenderAPI.PEGuid)]
     public class ExamplePlugin : BaseUnityPlugin
     {
         // Plugin Data
         private const string Guid = "my.example.plugin";
         private const string Name = "ExamplePlugin";
         private const string Version = "0.0.1";
-        public static bool randomReq = false;
+        private static bool randomReq = false;
         
         // Config
         internal static ConfigEntry<bool> DebugLogs;
@@ -39,7 +39,7 @@ namespace ExamplePlugin
             SavedItemIndex = Config.Bind("General", "SavedItemIndex", 0,
                 "Last equipped item item from the passport tab.\n0 = none.");
             DebugLogs = Config.Bind("General", "Debug_Logs", false, "Enable Verbose [DEBUG] output.");
-
+            
             // Get TabType from PE Runtime
             if (!PassportExtenderAPI.TryRegisterType(Guid, out var itemType))
             {
@@ -55,7 +55,8 @@ namespace ExamplePlugin
             {
                 // This is for a NONE item, so you can remove items.
                 // Think Hair (Tab 2, (Customization.Type)20), which has an empty slot.
-                BuildOption("mouthmesh_none", MakeExampleIcon([
+                // It is not required, as we are creating it willingly.
+                BuildOption("none", MakeExampleIcon([
                     new Color32(0xff, 0xff, 0xff, 0x00),
                     new Color32(0xff, 0xff, 0xff, 0x00)
                 ])),
@@ -95,23 +96,41 @@ namespace ExamplePlugin
                 // Array of Items to be show in tab.
                 Options = options.ToArray(),
                 InitialSelection = SavedItemIndex.Value, // Sets the selected item in Passport
-                OnInitialEquip = (chara, idx) =>
-                    // Returns Character and Item Index.
-                    // IE: You load into a run, you have no passport.
-                    // This will run so you can run your equip function.
-                {
-                    Log.LogInfo($"Returned Character: {chara}, Item Index: {idx}");
-                    return true;
-                    // Your mod returns status on 
-                    // true: Item successfully equipped
-                    // false: Item failed to equip
-                },
-                
-                // When selecting your option, this will return the index selected, so you can equip your item.
-                OnOptionSelected = index =>
-                {
-                    Log.LogInfo($"Selected Option: {index}");
-                }
+            });
+
+            PassportExtenderAPI.WhenManagerReady((manager) =>
+            {
+                // This is how you will verify passport readiness.
+                // See Dummy and Character methods for other stuff.
+                // This is useful for extending upon PE using its own methods and states
+                Log.LogInfo($"Manager ready in scene! {manager}");
+            });
+            
+            PassportExtenderAPI.WhenDummyShown((dummy) =>
+            {
+                // This detects when the Passport dummy is shown / created
+                // This is almost entirely redundant, unless you want to equip the cosmetics.
+                // It's mostly just a callback for Dummy init in the scene.
+                Log.LogInfo($"Dummy is shown! {dummy}");
+            });
+            
+            PassportExtenderAPI.WhenLocalCharacter((character) =>
+            {
+                // Once the Player Character is created, where you will then equip your cosmetics or whatever you want to the character
+                // Similarly to the Dummy, this is specifically for the character, so entering Runs will cause this to fire again.
+                Log.LogInfo($"Character is ready! {character}, Applying: {PassportExtenderAPI.GetSelected(itemType)}");
+            });
+            
+            PassportExtenderAPI.LocalCharacterChanged += (character) =>
+            {
+                // During Gameplay, when you say, die. At any point when your character is destroyed, this will Reapply.
+                Log.LogInfo($"Local Character Changed! {character}, Reapplying: {PassportExtenderAPI.GetSelected(itemType)}");
+            };
+            
+            // Subscribes to the Selection option
+            PassportExtenderAPI.SubscribeToSelection(itemType, (def, opt) =>
+            {
+                Log.LogInfo($"Selected Def: {def}, Option: {opt}");
             });
         }
         

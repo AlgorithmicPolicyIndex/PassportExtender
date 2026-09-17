@@ -8,12 +8,12 @@ public class TabType
     
     internal TabType(int id) => Id = id;
     
-    public bool Equals(TabType other) => Id == other.Id;
-    public override bool Equals([CanBeNull] object obj) => obj is TabType other && Equals(other);
+    private bool Equals(TabType other) => Id == other.Id;
+    public override bool Equals(object obj) => obj is TabType other && Equals(other);
     public override int GetHashCode() => Id.GetHashCode();
 
-    public static bool operator ==(TabType left, TabType right) => left.Equals(right);
-    public static bool operator !=(TabType left, TabType right) => !left.Equals(right);
+    public static bool operator ==([NotNull] TabType left, [NotNull] TabType right) => left.Equals(right);
+    public static bool operator !=([NotNull] TabType left, [NotNull] TabType right) => !left.Equals(right);
 
     public override string ToString() => $"TabType({Id})";
 }
