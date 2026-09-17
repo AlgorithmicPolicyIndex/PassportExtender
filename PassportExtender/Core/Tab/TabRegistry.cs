@@ -66,7 +66,7 @@ public static class TabRegistry
         var allApplied = true;
         foreach (var def in Registered)
         {
-            int sel = GetSelected(def.Type.Id);
+            var sel = GetSelected(def.Type.Id);
             if (sel < 0) continue;
 
             var applied = def.OnInitialEquip?.Invoke(character, sel) ?? true;

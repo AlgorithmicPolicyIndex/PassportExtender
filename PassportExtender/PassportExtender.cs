@@ -21,7 +21,7 @@ public sealed class Main : BaseUnityPlugin
 {
     public const string Guid = "com.algorithmicpolicyindex.passportextender";
     private const string Name = "PassportExtender";
-    private const string Version = "0.2.0";
+    private const string Version = "0.2.1";
     
     internal static ConfigEntry<bool> DebugLogs;
     
@@ -44,7 +44,8 @@ public sealed class Main : BaseUnityPlugin
             _harmony.PatchAll(typeof(CustomizationGetListPatch));
             _harmony.PatchAll(typeof(SetOptionPatch));
             _harmony.PatchAll(typeof(SetActiveButtonPatch));
-            
+            _harmony.PatchAll(typeof(IsAchievementUnlocked));
+                
             foreach (var method in _harmony.GetPatchedMethods())
                 Logger.LogDebug($"[Startup] Patched: {method.DeclaringType?.Name}.{method.Name}");
         }
