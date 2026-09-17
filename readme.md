@@ -76,6 +76,6 @@ and share under the same license.
 
 ---
 
-Copyright (c) 2026 Milo · [PassportExtender Github](https://github.com/AlgorithmicPolicyIndex/PassportExtender) ·
+Copyright (c) 2026 AlgorithmicPolicyIndex · [PassportExtender Github](https://github.com/AlgorithmicPolicyIndex/PassportExtender) ·
 PassportExtender is an unofficial community mod, not affiliated with
 Aggro Crab, Landfall, or the developers of PEAK.
